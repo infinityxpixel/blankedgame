@@ -4,18 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blanked — Fill the Void</title>
-    <!-- Favicon: Black square with a white card -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='black'/><rect x='25' y='35' width='50' height='40' rx='4' fill='white'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Grotesk:wght@300;700&display=swap');
         
         :root {
-            --bg: #0a0a0a;
+            --bg: #050505;
             --card-black: #000000;
             --card-white: #ffffff;
-            --border: #262626;
-            --accent: #ffffff;
+            --border: #1a1a1a;
         }
 
         body {
@@ -26,24 +24,23 @@
             scroll-behavior: smooth;
         }
 
+        .font-heading { font-family: 'Space Grotesk', sans-serif; }
+
         .logo-font {
-            letter-spacing: -0.05em;
+            letter-spacing: -0.07em;
             font-weight: 900;
             text-transform: uppercase;
+            font-family: 'Space Grotesk', sans-serif;
         }
 
-        .card-shadow {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Mouse Glow Effect */
+        /* Enhanced Mouse Glow */
         #mouse-glow {
             position: fixed;
             top: 0;
             left: 0;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 70%);
             border-radius: 50%;
             pointer-events: none;
             transform: translate(-50%, -50%);
@@ -55,57 +52,32 @@
             border: 1px solid var(--border);
             aspect-ratio: 3/4;
             position: relative;
-            overflow: hidden;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
             z-index: 10;
-        }
-
-        .black-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-            opacity: 0.1;
-            pointer-events: none;
         }
 
         .white-card {
             background-color: var(--card-white);
             color: black;
             aspect-ratio: 3/4;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
             z-index: 10;
         }
 
         .white-card:hover {
-            transform: translateY(-10px) rotate(-2deg);
-            box-shadow: 0 20px 40px -12px rgba(255, 255, 255, 0.1);
+            transform: translateY(-12px) rotate(-1deg) scale(1.02);
+            box-shadow: 0 40px 80px -20px rgba(255, 255, 255, 0.15);
         }
 
-        .glass-nav {
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .hero-gradient {
-            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(2deg); }
-        }
-
-        .floating {
-            animation: float 6s ease-in-out infinite;
+        .hero-title {
+            font-size: clamp(4rem, 15vw, 12rem);
+            line-height: 0.85;
         }
 
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease-out;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
         }
 
         .reveal.active {
@@ -116,11 +88,11 @@
         .play-btn {
             background: white;
             color: black;
-            padding: 1rem 2rem;
-            border-radius: 9999px;
-            font-weight: 900;
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.05em;
             display: inline-flex;
             align-items: center;
             gap: 12px;
@@ -128,149 +100,202 @@
         }
 
         .play-btn:hover {
-            transform: scale(1.05);
-            background: #f0f0f0;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(255,255,255,0.2);
+        }
+
+        .noise {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            z-index: 999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* Ritual Card Stack Effect */
+        .ritual-stack {
+            position: relative;
+            height: 400px;
+        }
+        .ritual-item {
+            position: absolute;
+            width: 280px;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .ritual-item:hover {
+            z-index: 50 !important;
+            transform: scale(1.05) translateY(-20px) !important;
         }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
     <div id="mouse-glow"></div>
+    <div class="noise"></div>
 
     <!-- Navigation -->
-    <nav class="glass-nav fixed top-0 w-full z-[100] px-6 py-4 flex justify-between items-center">
-        <div class="logo-font text-2xl tracking-tighter">Blanked</div>
-        <div class="flex gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">
-            <a href="#about" class="hover:text-white transition-colors">The Ritual</a>
-            <a href="#how-it-plays" class="hover:text-white transition-colors">How it Plays</a>
+    <nav class="fixed top-0 w-full z-[100] px-8 py-6 flex justify-between items-center mix-blend-difference">
+        <div class="logo-font text-3xl tracking-tighter cursor-default">Blanked</div>
+        <div class="hidden md:flex gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400">
+            <a href="#about" class="hover:text-white transition-colors">The Unholy Sync</a>
+            <a href="#how-it-plays" class="hover:text-white transition-colors">The Rules</a>
         </div>
-        <div>
-            <button class="bg-white text-black px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform active:scale-95">
-                Download
-            </button>
-        </div>
+        <button class="border border-white/20 hover:bg-white hover:text-black transition-all px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest">
+            Get App
+        </button>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="min-h-screen hero-gradient flex flex-col items-center justify-center pt-20 px-6 text-center relative overflow-hidden">
-        <div class="max-w-4xl relative z-10">
-            <h1 class="logo-font text-7xl md:text-9xl mb-4 leading-none select-none">
-                Fill the<br/><span class="text-neutral-800 transition-colors duration-1000">Void.</span>
-            </h1>
-            <p class="text-neutral-500 font-bold uppercase text-xs md:text-sm tracking-[0.5em] mb-4">
-                A Shared Descent into Chaos
-            </p>
-            <p class="text-neutral-600 text-[10px] uppercase font-bold tracking-widest mb-12 max-w-sm mx-auto">
-                Two players. One shared void. A test of humor, depravity, and eventually, total agreement.
-            </p>
+    <!-- Hero -->
+    <section class="min-h-screen flex flex-col items-center justify-center px-6 relative">
+        <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
-            <div class="flex flex-wrap justify-center gap-6 md:gap-12 mt-8 mb-16">
-                <div class="black-card w-48 md:w-64 rounded-3xl p-8 text-left card-shadow floating group" onclick="randomizeCard(this)">
-                    <p class="text-xl md:text-2xl font-bold leading-tight" id="hero-black-text">
-                        I got 99 problems but <span class="bg-white text-black px-2 rounded">_</span> ain't one.
-                    </p>
-                    <div class="absolute bottom-4 right-4 opacity-40 text-[8px] font-black uppercase">Click to Shuffle</div>
-                </div>
-                <div class="white-card w-48 md:w-64 rounded-3xl p-8 text-left card-shadow floating group" style="animation-delay: -3s;">
-                    <p class="text-xl md:text-2xl font-bold leading-tight">
-                        A disappointing birthday party.
-                    </p>
-                    <div class="absolute bottom-4 right-4 opacity-20 text-[8px] font-black uppercase">Blanked</div>
+            <div class="lg:col-span-7 text-left">
+                <h1 class="logo-font hero-title mb-8 select-none">
+                    FILL THE<br/><span class="text-neutral-900 transition-all duration-700 hover:text-white">VOID.</span>
+                </h1>
+                <p class="text-neutral-500 font-medium text-lg max-w-md mb-10 leading-relaxed">
+                    A digital card game for two. A shared descent into humor, depravity, and eventually, total agreement.
+                </p>
+                <a href="#" class="play-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L18.67,14.05C20.44,13.03 20.44,10.97 18.67,9.95L16.81,8.88L14.63,11.06L16.81,13.24V15.12M4.66,1.43L15.42,7.66L13.11,9.97L4.66,1.43M4.66,22.57L13.11,14.03L15.42,16.34L4.66,22.57Z" />
+                    </svg>
+                    Google Play
+                </a>
+            </div>
+
+            <div class="lg:col-span-5 flex justify-center lg:justify-end">
+                <div class="relative w-64 md:w-80 h-96">
+                    <!-- Black Card -->
+                    <div class="black-card w-full rounded-2xl p-8 absolute top-0 left-0 -rotate-6 shadow-2xl cursor-pointer hover:rotate-0 transition-transform" onclick="randomizeCard(this)">
+                        <p class="text-xl md:text-2xl font-bold leading-tight" id="hero-black-text">
+                            I got 99 problems but <span class="bg-white text-black px-2 rounded">_</span> ain't one.
+                        </p>
+                        <div class="absolute bottom-6 right-6 opacity-40 text-[8px] font-black uppercase tracking-widest">Shuffle</div>
+                    </div>
+                    <!-- White Card -->
+                    <div class="white-card w-full rounded-2xl p-8 absolute top-12 left-12 rotate-3 shadow-2xl">
+                        <p class="text-xl md:text-2xl font-bold leading-tight">
+                            Existential dread.
+                        </p>
+                        <div class="absolute bottom-6 right-6 opacity-20 text-[8px] font-black uppercase tracking-widest">Blanked</div>
+                    </div>
                 </div>
             </div>
 
-            <a href="#" class="play-btn group">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L18.67,14.05C20.44,13.03 20.44,10.97 18.67,9.95L16.81,8.88L14.63,11.06L16.81,13.24V15.12M4.66,1.43L15.42,7.66L13.11,9.97L4.66,1.43M4.66,22.57L13.11,14.03L15.42,16.34L4.66,22.57Z" />
-                </svg>
-                Download on Google Play
-            </a>
         </div>
     </section>
 
-    <!-- Detailed Text Section -->
-    <section id="about" class="py-32 px-6 bg-neutral-900/20">
-        <div class="max-w-3xl mx-auto text-center reveal">
-            <h2 class="logo-font text-5xl mb-8">The Social Ritual</h2>
-            <p class="text-neutral-400 text-lg leading-relaxed mb-8 font-medium">
-                Blanked isn't just a game; it's a conversation starter disguised as a disaster. While most card games focus on winning through luck, Blanked forces two minds to synchronize. It's a psychological dance where the goal is to find the perfect punchline—the one that makes you both lose it.
-            </p>
-            <p class="text-neutral-500 text-sm leading-relaxed mb-12">
-                Whether you're testing a new friendship or ruining a long-term relationship, Blanked provides the canvas for your darkest, weirdest, and most questionable thoughts to come to light.
-            </p>
-            <div class="flex flex-col items-center">
-                <div class="w-px h-24 bg-gradient-to-b from-white to-transparent"></div>
+    <div class="divider"></div>
+
+    <!-- The Unholy Sync -->
+    <section id="about" class="py-32 px-6 overflow-hidden">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div class="reveal">
+                <h2 class="font-heading text-5xl md:text-7xl font-bold mb-8 uppercase tracking-tighter leading-none">THE UNHOLY<br/>SYNC.</h2>
+                <div class="space-y-6 text-neutral-400 text-lg leading-relaxed max-w-lg">
+                    <p class="text-white font-bold">Forget winning. Start merging.</p>
+                    <p>Blanked is a digital séance for two people who are bored of "winning" and ready for "becoming." It's a disaster disguised as a card game, built to expose exactly how broken your shared sense of humor really is.</p>
+                    <p>You aren't playing against a machine or a crowd. You're playing against the only person who matters, trying to find the one punchline that makes you both question your morality.</p>
+                </div>
+            </div>
+
+            <!-- Enhanced Ritual Visual: Overlapping Floating Cards -->
+            <div class="ritual-stack hidden md:block reveal" style="transition-delay: 0.2s;">
+                <div class="ritual-item black-card rounded-2xl p-6 top-0 right-32 -rotate-12 z-30 shadow-2xl">
+                    <div class="h-2 w-8 bg-white/20 rounded-full mb-4"></div>
+                    <p class="text-sm font-bold opacity-80 uppercase tracking-widest">Ritual 01</p>
+                    <p class="mt-4 text-lg font-black leading-tight">Expose the brain-rot.</p>
+                </div>
+                <div class="ritual-item white-card rounded-2xl p-6 top-16 right-0 rotate-6 z-40 shadow-2xl">
+                    <p class="text-sm font-bold opacity-40 uppercase tracking-widest">Ritual 02</p>
+                    <p class="mt-4 text-lg font-black leading-tight text-black">Agree or die trying.</p>
+                </div>
+                <div class="ritual-item border border-white/10 rounded-2xl p-6 bottom-0 right-24 rotate-3 z-20 backdrop-blur-xl bg-white/5">
+                    <p class="text-sm font-bold opacity-30 uppercase tracking-widest">Ritual 03</p>
+                    <p class="mt-4 text-lg font-black leading-tight opacity-40">Two minds. One void.</p>
+                </div>
+            </div>
+            
+            <!-- Mobile ritual view -->
+            <div class="md:hidden space-y-4">
+                 <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl">
+                    <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-2">01. Synchronization</p>
+                    <p class="font-bold">Align your depravity with your partner in crime.</p>
+                 </div>
+                 <div class="bg-white text-black p-6 rounded-2xl">
+                    <p class="text-[10px] font-bold opacity-60 uppercase tracking-widest mb-2">02. Consensus</p>
+                    <p class="font-bold">Reach a shared truth, or walk away empty handed.</p>
+                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Gameplay Explanation -->
-    <section id="how-it-plays" class="py-32 px-6 max-w-7xl mx-auto">
-        <div class="text-center mb-24 reveal">
-            <h2 class="logo-font text-5xl mb-4">How it Plays</h2>
-            <p class="text-neutral-500 font-bold uppercase text-[10px] tracking-widest">Two Minds. One Winner.</p>
-            <div class="h-1 w-20 bg-white mx-auto mt-6"></div>
-        </div>
+    <!-- How it Plays -->
+    <section id="how-it-plays" class="py-24 px-6 bg-white text-black">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                <h2 class="font-heading text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">THE<br/>FLOW.</h2>
+                <p class="text-neutral-500 font-bold uppercase text-[10px] tracking-[0.4em] mb-4">Agreement is the victory</p>
+            </div>
 
-        <div class="grid md:grid-cols-3 gap-16">
-            <div class="reveal group">
-                <div class="text-neutral-800 group-hover:text-white transition-colors text-8xl font-black mb-4">01</div>
-                <h3 class="text-2xl font-black uppercase mb-4 tracking-tighter">Private Selection</h3>
-                <p class="text-neutral-400 leading-relaxed font-medium">
-                    You and your counterpart are each dealt a hand of the void's most bizarre answers. No peeking. No mercy.
-                </p>
-            </div>
-            <div class="reveal group" style="transition-delay: 0.2s;">
-                <div class="text-neutral-800 group-hover:text-white transition-colors text-8xl font-black mb-4">02</div>
-                <h3 class="text-2xl font-black uppercase mb-4 tracking-tighter">The Reveal</h3>
-                <p class="text-neutral-400 leading-relaxed font-medium">
-                    A question card is drawn. You both submit your best (or worst) match. Both answers are flipped simultaneously.
-                </p>
-            </div>
-            <div class="reveal group" style="transition-delay: 0.4s;">
-                <div class="text-neutral-800 group-hover:text-white transition-colors text-8xl font-black mb-4">03</div>
-                <h3 class="text-2xl font-black uppercase mb-4 tracking-tighter">The Agreement</h3>
-                <p class="text-neutral-400 leading-relaxed font-medium">
-                    The core mechanic: you must both agree at the end which answer was the funniest. Your shared verdict determines who walks away with the point.
-                </p>
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="reveal">
+                    <div class="text-4xl font-black mb-6">01.</div>
+                    <h3 class="text-xl font-bold uppercase mb-4 tracking-tight">Private Hand</h3>
+                    <p class="text-neutral-600 leading-relaxed text-sm">You and your counterpart are dealt the void's most bizarre answers. No peeking.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.1s;">
+                    <div class="text-4xl font-black mb-6">02.</div>
+                    <h3 class="text-xl font-bold uppercase mb-4 tracking-tight">The Reveal</h3>
+                    <p class="text-neutral-600 leading-relaxed text-sm">A question card is drawn. Both submit. Both are flipped simultaneously for the reveal.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.2s;">
+                    <div class="text-4xl font-black mb-6">03.</div>
+                    <h3 class="text-xl font-bold uppercase mb-4 tracking-tight">Consensus</h3>
+                    <p class="text-neutral-600 leading-relaxed text-sm">You must both agree which answer was the funniest. Your shared verdict determines the point.</p>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-24 border-t border-neutral-900 px-6 text-center text-neutral-500 text-[10px] font-black uppercase tracking-[0.3em]">
-        <div class="logo-font text-white text-xl mb-4 tracking-tighter">Blanked</div>
-        <p class="mb-8 max-w-xs mx-auto leading-relaxed italic">Finding humor in the places you shouldn't look.</p>
-        <div class="flex justify-center gap-6 mb-12">
-            <a href="https://infinityxpixel.github.io/home/" class="hover:text-white transition-colors">Infinity Pixel</a>
-            <a href="https://infinityxpixel.github.io/ronin/" class="hover:text-white transition-colors">Ronin’s Revenge</a>
-            <a href="#" class="hover:text-white transition-colors">Privacy</a>
+    <footer class="py-20 px-6 text-center">
+        <div class="reveal">
+            <div class="logo-font text-5xl mb-8 tracking-tighter">Blanked</div>
+            <p class="text-neutral-600 text-[10px] font-bold uppercase tracking-[0.5em] mb-12">Ruin your night. Properly.</p>
+            <div class="flex justify-center gap-12 text-[9px] font-bold uppercase tracking-widest text-neutral-500">
+                <a href="https://infinityxpixel.github.io/home/" class="hover:text-white transition-colors">Infinity Pixel</a>
+                <a href="https://infinityxpixel.github.io/ronin/" class="hover:text-white transition-colors">Ronin’s Revenge</a>
+                <a href="#" class="hover:text-white transition-colors">Terms</a>
+            </div>
         </div>
-        &copy; 2026 Infinity Pixel.
     </footer>
 
     <script>
-        // Mouse Glow Tracking
         const glow = document.getElementById('mouse-glow');
         window.addEventListener('mousemove', (e) => {
             glow.style.left = e.clientX + 'px';
             glow.style.top = e.clientY + 'px';
         });
 
-        // Reveal animation on scroll
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
             for (var i = 0; i < reveals.length; i++) {
                 var windowHeight = window.innerHeight;
                 var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 150;
-                if (elementTop < windowHeight - elementVisible) {
+                if (elementTop < windowHeight - 100) {
                     reveals[i].classList.add("active");
                 }
             }
         }
 
-        // Randomize Hero Black Card
         const prompts = [
             "I got 99 problems but _ ain't one.",
             "TSA guidelines now prohibit _.",
@@ -284,13 +309,12 @@
             const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
             textEl.innerHTML = randomPrompt.replace('_', '<span class="bg-white text-black px-2 rounded">_</span>');
             
-            el.style.transform = 'scale(1.1) rotate(-8deg)';
+            el.style.transform = 'translateY(-20px) scale(1.05) rotate(0deg)';
             setTimeout(() => {
                 el.style.transform = '';
-            }, 200);
+            }, 300);
         }
 
-        // Init
         window.addEventListener("scroll", reveal);
         reveal();
     </script>
