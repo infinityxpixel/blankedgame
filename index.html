@@ -14,6 +14,7 @@
             --card-black: #000000;
             --card-white: #ffffff;
             --border: #1a1a1a;
+            --void-red: #ff0000;
         }
 
         body {
@@ -31,6 +32,17 @@
             font-weight: 900;
             text-transform: uppercase;
             font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Particle Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
         }
 
         /* Enhanced Mouse Glow */
@@ -65,13 +77,27 @@
         }
 
         .white-card:hover {
-            transform: translateY(-12px) rotate(-1deg) scale(1.02);
-            box-shadow: 0 40px 80px -20px rgba(255, 255, 255, 0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 40px 80px -20px rgba(255, 255, 255, 0.1);
         }
 
+        /* Title Scaling */
         .hero-title {
-            font-size: clamp(4rem, 15vw, 12rem);
-            line-height: 0.85;
+            font-size: clamp(3rem, 10vw, 7rem);
+            line-height: 0.9;
+        }
+
+        .void-text {
+            color: #111;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .void-text:hover {
+            color: var(--void-red);
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
+            transform: scale(1.05);
         }
 
         .reveal {
@@ -132,9 +158,16 @@
             z-index: 50 !important;
             transform: scale(1.05) translateY(-20px) !important;
         }
+
+        .card-container-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            perspective: 1000px;
+        }
     </style>
 </head>
-    <!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLN9BJR8CR"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -145,17 +178,18 @@
 </script>
 <body class="antialiased">
 
+    <canvas id="particle-canvas"></canvas>
     <div id="mouse-glow"></div>
     <div class="noise"></div>
 
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-[100] px-8 py-6 flex justify-between items-center mix-blend-difference">
-        <div class="logo-font text-3xl tracking-tighter cursor-default">Blanked</div>
+        <div class="logo-font text-3xl tracking-tighter cursor-default text-white">Blanked</div>
         <div class="hidden md:flex gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400">
             <a href="#about" class="hover:text-white transition-colors">The Unholy Sync</a>
             <a href="#how-it-plays" class="hover:text-white transition-colors">The Rules</a>
         </div>
-        <button class="border border-white/20 hover:bg-white hover:text-black transition-all px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest">
+        <button class="border border-white/20 hover:bg-white hover:text-black transition-all px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest text-white">
             Get App
         </button>
     </nav>
@@ -164,9 +198,9 @@
     <section class="min-h-screen flex flex-col items-center justify-center px-6 pt-24 lg:pt-32 relative">
         <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
-            <div class="lg:col-span-7 text-left">
+            <div class="lg:col-span-6 text-left">
                 <h1 class="logo-font hero-title mb-8 select-none">
-                    FILL THE<br/><span class="text-neutral-900 transition-all duration-700 hover:text-white">VOID.</span>
+                    FILL THE<br/><span class="void-text">VOID.</span>
                 </h1>
                 <p class="text-neutral-500 font-medium text-lg max-w-md mb-10 leading-relaxed">
                     A digital card game for two. A shared descent into humor, depravity, and eventually, total agreement.
@@ -179,21 +213,21 @@
                 </a>
             </div>
 
-            <div class="lg:col-span-5 flex justify-center lg:justify-end">
-                <div class="relative w-64 md:w-80 h-96">
+            <div class="lg:col-span-6 flex justify-center lg:justify-end">
+                <div class="card-container-grid w-full max-w-lg">
                     <!-- Black Card -->
-                    <div class="black-card w-full rounded-2xl p-8 absolute top-0 left-0 -rotate-6 shadow-2xl cursor-pointer hover:rotate-0 transition-transform" onclick="randomizeCard(this)">
-                        <p class="text-xl md:text-2xl font-bold leading-tight" id="hero-black-text">
+                    <div class="black-card w-full rounded-2xl p-6 shadow-2xl cursor-pointer hover:-translate-y-4 transition-all duration-500" onclick="randomizeBlackCard(this)">
+                        <p class="text-lg md:text-xl font-bold leading-tight" id="hero-black-text">
                             I got 99 problems but <span class="bg-white text-black px-2 rounded">_</span> ain't one.
                         </p>
                         <div class="absolute bottom-6 right-6 opacity-40 text-[8px] font-black uppercase tracking-widest">Shuffle</div>
                     </div>
                     <!-- White Card -->
-                    <div class="white-card w-full rounded-2xl p-8 absolute top-12 left-12 rotate-3 shadow-2xl">
-                        <p class="text-xl md:text-2xl font-bold leading-tight">
+                    <div class="white-card w-full rounded-2xl p-6 shadow-2xl cursor-pointer hover:-translate-y-4 transition-all duration-500" onclick="randomizeWhiteCard(this)">
+                        <p class="text-lg md:text-xl font-bold leading-tight" id="hero-white-text">
                             The sheer audacity of this bitch..
                         </p>
-                        <div class="absolute bottom-6 right-6 opacity-20 text-[8px] font-black uppercase tracking-widest">Blanked</div>
+                        <div class="absolute bottom-6 right-6 opacity-40 text-[8px] font-black uppercase tracking-widest">Blanked</div>
                     </div>
                 </div>
             </div>
@@ -215,7 +249,6 @@
                 </div>
             </div>
 
-            <!-- Enhanced Ritual Visual: Overlapping Floating Cards -->
             <div class="ritual-stack hidden md:block reveal" style="transition-delay: 0.2s;">
                 <div class="ritual-item black-card rounded-2xl p-6 top-0 right-32 -rotate-12 z-30 shadow-2xl">
                     <div class="h-2 w-8 bg-white/20 rounded-full mb-4"></div>
@@ -226,20 +259,6 @@
                     <p class="text-sm font-bold opacity-40 uppercase tracking-widest">Step 02</p>
                     <p class="mt-4 text-lg font-black leading-tight text-black">Agree or die trying.</p>
                 </div>
-
-                </div>
-            </div>
-            
-            <!-- Mobile ritual view -->
-            <div class="md:hidden space-y-4">
-                 <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl">
-                    <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-2">01. Synchronization</p>
-                    <p class="font-bold">Align your depravity with your partner in crime.</p>
-                 </div>
-                 <div class="bg-white text-black p-6 rounded-2xl">
-                    <p class="text-[10px] font-bold opacity-60 uppercase tracking-widest mb-2">02. Consensus</p>
-                    <p class="font-bold">Reach a shared truth, or walk away empty handed.</p>
-                 </div>
             </div>
         </div>
     </section>
@@ -254,44 +273,103 @@
 
             <div class="grid md:grid-cols-3 gap-12">
                 <div class="reveal">
-                    <div class="text-4xl font-black mb-6">01.</div>
-                    <h3 class="text-xl font-bold uppercase mb-4 tracking-tight">Private Hand</h3>
-                    <p class="text-neutral-600 leading-relaxed text-sm">You and your counterpart are dealt the void's most bizarre answers. No peeking.</p>
+                    <div class="text-5xl font-black mb-6">01.</div>
+                    <h3 class="text-2xl font-bold uppercase mb-4 tracking-tight">Private Hand</h3>
+                    <p class="text-neutral-600 leading-relaxed text-lg">You and your counterpart are dealt the void's most bizarre answers. No peeking.</p>
                 </div>
                 <div class="reveal" style="transition-delay: 0.1s;">
-                    <div class="text-4xl font-black mb-6">02.</div>
-                    <h3 class="text-xl font-bold uppercase mb-4 tracking-tight">The Reveal</h3>
-                    <p class="text-neutral-600 leading-relaxed text-sm">A question card is drawn. Both submit via Pass and Play. Both are flipped simultaneously for the reveal.</p>
+                    <div class="text-5xl font-black mb-6">02.</div>
+                    <h3 class="text-2xl font-bold uppercase mb-4 tracking-tight">The Reveal</h3>
+                    <p class="text-neutral-600 leading-relaxed text-lg">A question card is drawn. Both submit via Pass and Play. Both are flipped simultaneously for the reveal.</p>
                 </div>
                 <div class="reveal" style="transition-delay: 0.2s;">
-                    <div class="text-4xl font-black mb-6">03.</div>
-                    <h3 class="text-xl font-bold uppercase mb-4 tracking-tight">Consensus</h3>
-                    <p class="text-neutral-600 leading-relaxed text-sm">You must both agree which answer was the funniest. Your shared verdict determines the point.</p>
+                    <div class="text-5xl font-black mb-6">03.</div>
+                    <h3 class="text-2xl font-bold uppercase mb-4 tracking-tight">Consensus</h3>
+                    <p class="text-neutral-600 leading-relaxed text-lg">You must both agree which answer was the funniest. Your shared verdict determines the point.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="py-20 px-6 text-center">
         <div class="reveal">
             <div class="logo-font text-5xl mb-8 tracking-tighter">Blanked</div>
             <p class="text-neutral-600 text-[10px] font-bold uppercase tracking-[0.5em] mb-12">Ruin your night. Properly.</p>
             <div class="flex justify-center gap-12 text-[9px] font-bold uppercase tracking-widest text-neutral-500">
-               <a href="https://infinityxpixel.github.io/home/" class="hover:text-white transition-colors">Infinity Pixel</a>
-               <a href="https://infinityxpixel.github.io/ronin/" class="hover:text-white transition-colors">Ronin’s Revenge</a>
-               <a href="#" class="hover:text-white transition-colors">Terms</a>
+                <a href="https://infinityxpixel.github.io/home/" class="hover:text-white transition-colors">Infinity Pixel</a>
             </div>
         </div>
     </footer>
 
     <script>
+        // Particle System
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 1.5;
+                this.speedY = (Math.random() - 0.5) * 1.5;
+                this.opacity = 0.6;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.opacity -= 0.01;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(150, 150, 150, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function handleParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].opacity <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            handleParticles();
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Mouse Events
         const glow = document.getElementById('mouse-glow');
         window.addEventListener('mousemove', (e) => {
             glow.style.left = e.clientX + 'px';
             glow.style.top = e.clientY + 'px';
+            
+            // Add particles
+            for(let i = 0; i < 2; i++) {
+                particles.push(new Particle(e.clientX, e.clientY));
+            }
         });
 
+        // Reveal logic
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
             for (var i = 0; i < reveals.length; i++) {
@@ -308,18 +386,39 @@
             "TSA guidelines now prohibit _.",
             "Wait, if you're here, then who's _?",
             "My secret superpower is _.",
-            "Life is short. Spend it on _."
+            "Life is short. Spend it on _.",
+            "What brought the party to a grinding halt?"
+        ];
+
+        const answers = [
+            "The sheer audacity of this bitch..",
+            "A disappointing birthday party.",
+            "Texting while driving.",
+            "72 virgins.",
+            "The feeling of wet socks.",
+            "Self-loathing.",
+            "My relationship status.",
+            "An oversized lollipop."
         ];
         
-        function randomizeCard(el) {
+        function randomizeBlackCard(el) {
             const textEl = document.getElementById('hero-black-text');
             const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-            textEl.innerHTML = randomPrompt.replace('_', '<span class="bg-white text-black px-2 rounded">_</span>');
+            textEl.innerHTML = randomPrompt.includes('_') 
+                ? randomPrompt.replace('_', '<span class="bg-white text-black px-2 rounded">_</span>')
+                : randomPrompt;
             
-            el.style.transform = 'translateY(-20px) scale(1.05) rotate(0deg)';
-            setTimeout(() => {
-                el.style.transform = '';
-            }, 300);
+            el.style.transform = 'scale(0.95) rotate(-2deg)';
+            setTimeout(() => el.style.transform = '', 150);
+        }
+
+        function randomizeWhiteCard(el) {
+            const textEl = document.getElementById('hero-white-text');
+            const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
+            textEl.innerText = randomAnswer;
+            
+            el.style.transform = 'scale(0.95) rotate(2deg)';
+            setTimeout(() => el.style.transform = '', 150);
         }
 
         window.addEventListener("scroll", reveal);
